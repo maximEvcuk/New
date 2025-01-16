@@ -34,7 +34,40 @@ void DoublyLinkedList<T>::AddToToil(T value) {
 		tail = newNode;
 	}
 }
- 
+
+template <typename T>
+void DoublyLinkedList<T>::InsertAt(int value, int position) {
+	if (position < 0) return;
+
+	if (position == 0) {
+		AddToHead(value);
+		return;
+	}
+
+	Node<T>* newNode = new Node<T>(value);
+	Node<T>* current = head;
+	for (int i = 0; i < position&&current != nullptr ; ++i){
+		current = current->next;
+	}
+
+	if (current == nullptr) {
+		AddToToil(value);
+	}
+
+	else {
+		newNode->prev = current->prev;
+		newNode->next = current;
+		if (current->prev) {
+			current->prev->next = newNode;
+		}
+		current->prev = newNode;
+
+		if (newNode->prev == nullptr) {
+			head = newNode;
+		}
+	}
+}
+
 template <typename T>
 void DoublyLinkedList<T>::DeleteFromHead() {
 	if (!head) return;
@@ -56,11 +89,89 @@ void DoublyLinkedList<T>::DeleteFromTail() {
 }
 
 template <typename T>
+void DoublyLinkedList<T>::DeleteAt(int position) {
+	if (position < 0) return;
+
+	if (position == 0) {
+		DeleteFromHead();
+		return;
+	}
+
+	Node<T>* current = head;
+	for (int i = 0; i < position && current != nullptr; ++i) {
+		current = current->next;
+	}
+
+	if (current) {
+		if (current->prev){
+			current->prev->next = current->next;
+	    }
+		
+		if (current->next) {
+			current->next->prev = current->prev;
+	    }
+
+		if (current == tail) {
+			tail = current->prev;
+		}
+		delete current;
+	}
+	
+}
+
+template <typename T>
 void DoublyLinkedList<T>::DeleteAll() {
 	while (head) {
 		DeleteFromHead();
 	}
 }
+
+template <typename T>
+int DoublyLinkedList<T>::Search(T value) const{
+	Node<T>* current = head;
+	int position = 0;
+	while (current) {
+		if (current->data == value) {
+			return position;
+		}
+		current = current->next;
+		position++;
+	}
+	return -1;
+}
+
+template <typename T>
+int DoublyLinkedList<T>::Replace(T oldValue, T newValue) {
+	Node<T>* current = head;
+	int count = 0;
+	while (current) {
+		if (current->data == oldValue) {
+			current->data = newValue;
+			count++;
+		}
+		current = current->next;
+	}
+	return count > 0 ? count : -1;
+}
+
+template <typename T>
+void DoublyLinkedList<T>::Reverse() {
+	Node<T>* current = head;
+	Node<T>* temp = nullptr;
+	tail = head;
+
+	while (current){
+		temp = current->prev;
+		current->prev = current->next;
+		current->next = temp;
+		current = current->prev;
+	}
+	if (temp){
+		head = temp->prev;
+	}
+}
+
+
 
 template <typename T>
 void DoublyLinkedList<T>::Show() const {
@@ -78,17 +189,27 @@ int main() {
 
 	list.AddToHead(10);
 	list.AddToToil(20);
-	list.AddToHead(5);
+	list.AddToToil(30);
+	list.InsertAt(15, 1);
 
-	std::cout << "list: ";
+	std::cout << "List: ";
 	list.Show();
 
-	list.DeleteFromHead();
-	std::cout << "List after deleting from head: ";
+	list.DeleteAt(1);
+	std::cout << "List after deleting at position 1: ";
 	list.Show();
 
-	list.DeleteFromTail();
-	std::cout << "List after deleting from toil: ";
+	int pos = list.Search(20);
+	std::cout << "Position of 20: " << pos << std::endl;
+
+	int replacedCount = list.Replace(20, 25);
+	std::cout << "Number of replaced items: " << replacedCount << std::endl;
+	std::cout << "list after replace: "; 
+	list.Show();
+
+
+	list.Reverse();
+	std::cout << "List after reversing: ";
 	list.Show();
 
 	list.DeleteAll();

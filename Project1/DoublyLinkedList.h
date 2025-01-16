@@ -26,9 +26,14 @@ public:
 
     void AddToHead(T value);
     void AddToToil(T value);
+    void InsertAt(int value, int position);
     void DeleteFromHead();
     void DeleteFromTail();
+    void DeleteAt(int position);
     void DeleteAll();
+    int Search(T value) const;
+    int Replace(T oldValue, T newValue);
+    void Reverse();
     void Show() const;
 };
 
