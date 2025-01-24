@@ -2,6 +2,7 @@
 #define DOUBLY_LINKED_LIST_H
 
 #include <iostream>
+#include <stdexcept>
 
 template <typename T >
 class Node {
@@ -12,6 +13,16 @@ public:
 
 	Node(T value) : data(value), next(nullptr), prev(nullptr) {}
 	
+};
+
+class EmptyListException : public std::runtime_error {
+public:
+    EmptyListException() : std::runtime_error("The list is empty!") {}
+};
+
+class MemoryAllocationException : public std::runtime_error {
+    MemoryAllocationException() : std::runtime_error("Memory allocation error!") {}
+
 };
 
 template <typename T>
@@ -26,7 +37,7 @@ public:
 
     void AddToHead(T value);
     void AddToToil(T value);
-    void InsertAt(int value, int position);
+    void InsertAt(T value, int position);
     void DeleteFromHead();
     void DeleteFromTail();
     void DeleteAt(int position);
@@ -38,8 +49,5 @@ public:
 };
 
 #include "DoublyLinkedList.h"
-
-
-
 
 #endif // DOUBLY_LINKED_LIST_H
